@@ -3,3 +3,4 @@
 # dependencies
 fastapi_env
 __pycache__
+/*/env
