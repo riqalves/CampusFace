@@ -1,9 +1,8 @@
 from typing import List, Optional
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
-from models.Badge import Badge
 
-class User (BaseModel):
+class UserRegister (BaseModel):
     name: str
     email: EmailStr
     password: str
@@ -14,9 +13,6 @@ class User (BaseModel):
 class UserLogin(BaseModel):
     username: EmailStr
     password: str
-
-    bio: Optional[str] = None
-
 
 class UpdateUserCredentials(BaseModel):
     email: EmailStr
