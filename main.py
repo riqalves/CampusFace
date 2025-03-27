@@ -1,7 +1,8 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from datetime import datetime, timedelta
-from jose import JWTError, jwt
+import jwt
+from jwt.exceptions import InvalidTokenError
 
 SECRET_KEY = "your_secret_key"
 ALGORITHM = "HS256"
@@ -43,5 +44,5 @@ def protected_route(token: str = Depends(oauth2_scheme)):
         if username is None:
             raise HTTPException(status_code=401, detail="Token inválido")
         return {"message": f"Olá, {username}! Você acessou uma rota protegida."}
-    except JWTError:
+    except InvalidTokenError:
         raise HTTPException(status_code=401, detail="Token inválido")
