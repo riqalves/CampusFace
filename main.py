@@ -1,48 +1,37 @@
-from fastapi import FastAPI, Depends, HTTPException
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
+from typing import Annotated
+
 import jwt
+from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jwt.exceptions import InvalidTokenError
+from passlib.context import CryptContext
+from pydantic import BaseModel
 
-SECRET_KEY = "your_secret_key"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+from models.Token import Token, TokenData
+from models.User import User
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
+from router.userRouter import user_router
+from router.authRouter import auth_router
+# to get a string like this run:
+# openssl rand -hex 32
+
+
+
+
+
+
 
 app = FastAPI()
 
-fake_users_db = {
-    "testuser": {
-        "username": "testuser",
-        "password": "testpassword"  
-    }
-}
+app.include_router(user_router)
+app.include_router(auth_router)
 
-def create_access_token(data: dict, expires_delta: timedelta):
-    to_encode = data.copy()
-    expire = datetime.now() + expires_delta
-    to_encode.update({"exp": expire})
-    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-@app.post("/login")
-def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = fake_users_db.get(form_data.username)
-    if not user or user["password"] != form_data.password:
-        raise HTTPException(status_code=400, detail="Credenciais inválidas")
-    
-    access_token = create_access_token(
-        data={"sub": user["username"]}, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    )
-    return {"access_token": access_token, "token_type": "bearer"}
 
-@app.get("/protected")
-def protected_route(token: str = Depends(oauth2_scheme)):
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
-            raise HTTPException(status_code=401, detail="Token inválido")
-        return {"message": f"Olá, {username}! Você acessou uma rota protegida."}
-    except InvalidTokenError:
-        raise HTTPException(status_code=401, detail="Token inválido")
+
+
+
+
+
+
