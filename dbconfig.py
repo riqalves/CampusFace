@@ -9,8 +9,6 @@ db = client.campusFace
 
 usersCollection = db['users']
 
-
-
 # Send a ping to confirm a successful connection
 try:
     client.admin.command('ping')
