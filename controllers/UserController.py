@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
+from bson import ObjectId
 import jwt
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -11,7 +12,7 @@ from pydantic import BaseModel
 from serializer.userSerializer import convertUser
 
 from models.Token import Token, TokenData
-from models.User import User
+from models.User import User, UpdateUserCredentials
 
 from dbconfig import usersCollection
 
@@ -32,7 +33,13 @@ class UserController:
         if user_data:
             return convertUser(user_data)
             
-    
+    def get_user_by_email(email: str)-> User:
+        user = usersCollection.find_one({'email': email})
+        if not user:
+            return print("Usuário não encontrado")
+        return convertUser(user)
+
+
     def is_email_valid(email: str)-> bool:
         user = usersCollection.find_one({'email': email})
         # Se o usuário de mesmo email não for encontrado, logo é possível cadastrar
@@ -41,13 +48,27 @@ class UserController:
         return False
 
     def insert_user(user: User) -> bool:
-        user.created_at = datetime.now()
+        user.created_at = datetime.utcnow()
         user.password =  UserController.get_password_hash(user.password)
+        user.disabled = False
         insert = usersCollection.insert_one(dict(user))
-        if not insert:
-            return False
-        return True
+        if insert:
+            return True
+        return False
 
+    def update_user_credentials(id:str,userCredentials: UpdateUserCredentials) -> bool:
+        userCredentials.password = UserController.get_password_hash(userCredentials.password)
+        userCredentials.updated_at = datetime.utcnow()
+        userUpdated = usersCollection.find_one_and_update({"_id": ObjectId(id)},{"$set": dict(userCredentials)})
+        if userUpdated:
+            return True
+        return False
+
+    def delete_user(id:str):
+        deletedUser = usersCollection.find_one_and_delete({"_id": ObjectId(id)})
+        if deletedUser:
+            return True
+        return False
 
     
 

@@ -6,8 +6,10 @@ def convertUser(user) -> dict:
         "username": user["username"],
         "email": user["email"],
         "password": user["password"],
+        "role": user["role"],
+        "disabled": user["disabled"],
         "created_at": user["created_at"],
-        "disabled": user["disabled"]
+        "updated_at": user["updated_at"]
     }
 
 

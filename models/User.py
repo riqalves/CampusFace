@@ -2,14 +2,6 @@ from typing import List, Optional
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
 
-class UserRegister (BaseModel):
-    name: str
-    email: EmailStr
-    password: str
-    birthDate: datetime
-    imagePath: Optional[str] = None
-    created_at: Optional[datetime] = None
-
 class UserLogin(BaseModel):
     username: EmailStr
     password: str
@@ -17,17 +9,16 @@ class UserLogin(BaseModel):
 class UpdateUserCredentials(BaseModel):
     email: EmailStr
     password: str
+    updated_at: Optional[datetime] = None
 
 class User(BaseModel):
     username: str
     email: EmailStr
     password: str
-    created_at: Optional[datetime] = None
+    role: str
     disabled: bool | None = None
-
-# Esqueci a senha
-class ForgotPassword(BaseModel):
-    email: EmailStr
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
 class ResetCode(BaseModel):
     email: EmailStr
