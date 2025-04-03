@@ -18,7 +18,12 @@ class UpdateUserCredentials(BaseModel):
     email: EmailStr
     password: str
 
-
+class User(BaseModel):
+    username: str
+    email: EmailStr
+    password: str
+    created_at: Optional[datetime] = None
+    disabled: bool | None = None
 
 # Esqueci a senha
 class ForgotPassword(BaseModel):
