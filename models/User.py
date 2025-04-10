@@ -15,6 +15,8 @@ class User(BaseModel):
     username: str
     email: EmailStr
     password: str
+    birthDate: Optional[datetime]
+    cpf: str
     role: str
     disabled: bool | None = None
     created_at: Optional[datetime] = None

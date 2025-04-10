@@ -1,17 +1,11 @@
-from datetime import datetime, timedelta, timezone
-from typing import Annotated
+from datetime import datetime
 
 from bson import ObjectId
 import jwt
-from fastapi import Depends, FastAPI, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from jwt.exceptions import InvalidTokenError
 from passlib.context import CryptContext
-from pydantic import BaseModel
 
 from serializer.userSerializer import convertUser
 
-from models.Token import Token, TokenData
 from models.User import User, UpdateUserCredentials
 
 from dbconfig import usersCollection
