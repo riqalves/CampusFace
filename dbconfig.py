@@ -8,6 +8,7 @@ client = MongoClient("mongodb://localhost:27017/", server_api=ServerApi('1'))
 db = client.campusFace
 
 usersCollection = db['users']
+hubsCollection = db['hubs']
 
 # Send a ping to confirm a successful connection
 try:
