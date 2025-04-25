@@ -1,14 +1,10 @@
-from datetime import datetime, timedelta, timezone
+from datetime import timedelta
 from typing import Annotated
 
-import jwt
-from fastapi import Depends, FastAPI, HTTPException, status, APIRouter
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from jwt.exceptions import InvalidTokenError
-from passlib.context import CryptContext
-from pydantic import BaseModel
+from fastapi import Depends, HTTPException, status, APIRouter
+from fastapi.security import OAuth2PasswordRequestForm
 
-from models.Token import Token, TokenData
+from models.Token import Token
 from models.User import User
 
 from controllers.UserController import UserController
