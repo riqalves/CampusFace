@@ -1,32 +1,18 @@
-from datetime import datetime, timedelta, timezone
-from typing import Annotated
-
-import jwt
-from fastapi import Depends, FastAPI, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from jwt.exceptions import InvalidTokenError
-from passlib.context import CryptContext
-from pydantic import BaseModel
-
-from models.Token import Token, TokenData
-from models.User import User
+from fastapi import FastAPI
 
 from router.userRouter import user_router
 from router.authRouter import auth_router
-# to get a string like this run:
-# openssl rand -hex 32
-
-
-
-
-
-
+from router.hubRouter import hub_router
 
 app = FastAPI()
 
-app.include_router(user_router)
-app.include_router(auth_router)
+@app.get("/", tags=["Root"])
+def read_root():
+    return {"message": "API is up and running"}
 
+app.include_router(user_router, prefix="/user", tags=["Users"])
+app.include_router(auth_router, prefix="/auth", tags=["Auth"])
+app.include_router(hub_router, prefix="/hub", tags=["Hub"])
 
 
 
