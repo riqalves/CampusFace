@@ -1,19 +1,25 @@
 from datetime import datetime
+from bson import ObjectId,errors
+from serializer.hubSerializer import convertHub
 
-from bson import ObjectId
-from serializer.userSerializer import convertUser
-
-from models.Hub import Hub
+from models.Hub import Hub, HubOut
 
 from dbconfig import hubsCollection
 
 
-class hubController:
+class HubController:
     
-    def get_hub_by_id(id: str)->dict:
-        hub = hubsCollection.find_one({"_id": ObjectId(id)})
-        if hub:
-            return convertUser(hub)
+    def get_hub_by_id(id: str) -> HubOut | None:
+        try:
+            obj_id = ObjectId(id)
+        except (errors.InvalidId, TypeError):
+            return None
+
+        hub = hubsCollection.find_one({"_id": obj_id})
+        return HubOut(**convertHub(hub)) if hub else None
+            
+
+        
             
     # def get_employees(email: str)
         
