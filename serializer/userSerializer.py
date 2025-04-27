@@ -1,6 +1,18 @@
 
 def convertUser(user) -> dict:
 
+
+    roles = user.get("roles") or []
+
+
+    if user["roles"] != []:
+        convertedUserList = []
+        for idUser in user["roles"]:
+            convertedUserList.append(idUser)
+        user["roles"] = convertedUserList
+
+
+
     return {
         "id": str(user["_id"]),
         "username": user["username"],
@@ -8,7 +20,7 @@ def convertUser(user) -> dict:
         "password": user["password"],
         "birthDate":user["birthDate"],
         "cpf":user["cpf"],
-        "role": user["role"],
+        "roles": user["roles"],
         "disabled": user["disabled"],
         "created_at": user["created_at"],
         "updated_at": user["updated_at"]

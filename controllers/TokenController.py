@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta, timezone
-from typing import Annotated
+from typing import Annotated, List
 
 import jwt
 from fastapi import Depends, HTTPException, status
@@ -56,6 +56,17 @@ class TokenController:
         if user is None:
             raise credentials_exception
         return user
+
+
+    def get_current_user_with_role(allowed_roles: List[str]):
+        async def wrapper(user: User = Depends(TokenController.get_current_user)):
+            if not any(role in allowed_roles for role in user["roles"]):
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail="Você não tem permissão para acessar este recurso"
+                )
+            return user
+        return wrapper
 
     async def get_current_active_user(current_user: Annotated[User, Depends(get_current_user)]):
             if current_user["disabled"]:

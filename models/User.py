@@ -17,7 +17,7 @@ class User(BaseModel):
     password: str
     birthDate: Optional[datetime]
     cpf: str
-    role: str
+    roles: Optional[List[str]]
     disabled: bool | None = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None

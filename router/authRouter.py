@@ -46,5 +46,16 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
 async def read_own_items(current_user: Annotated[User, Depends(TokenController.get_current_active_user)]):
     return [{"item_id": "Foo", "owner": current_user["username"]}]
 
+@auth_router.get("/admin-area")
+async def read_admin_data(user: User = Depends(TokenController.get_current_user_with_role(["admin"]))):
+    return {"msg": f"Olá, {user["username"]}! Você é um administrador."}
+
+@auth_router.get("/verificador-area")
+async def read_verificador_data(user: User = Depends(TokenController.get_current_user_with_role(["veirifier"]))):
+    return {"msg": f"Olá, {user["username"]}! Você é um verificador."}
+
+@auth_router.get("/cliente-area")
+async def read_cliente_data(user: User = Depends(TokenController.get_current_user_with_role(["client"]))):
+    return {"msg": f"Olá, {user["username"]}! Você é um cliente."}
 
 
