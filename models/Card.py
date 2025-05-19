@@ -2,14 +2,13 @@ from typing import List, Optional
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
 
-class UserLogin(BaseModel):
-    username: EmailStr
-    password: str
-
-class UpdateUserCredentials(BaseModel):
-    email: EmailStr
-    password: str
+class Card(BaseModel):
+    
+    userID: str
+    expirationDate: datetime 
+    created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+
 
 class User(BaseModel):
     username: str

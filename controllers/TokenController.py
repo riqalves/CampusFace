@@ -73,8 +73,12 @@ class TokenController:
                 raise HTTPException(status_code=400, detail="Usuário inativo!")
             return current_user
 
-    def authenticate_user(username: str, password: str)->dict:
+    def authenticate_user(username: str, password: str) -> dict:
+        # Tenta buscar o usuário pelo username
         user = UserController.get_user(username)
+        # Se não encontrar, tenta buscar pelo email
+        if not user:
+            user = UserController.get_user_by_email(username)
         if not user:
             return False
         if not UserController.verify_password(password, user["password"]):
