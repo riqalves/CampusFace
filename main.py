@@ -10,7 +10,7 @@ app = FastAPI()
 def read_root():
     return {"message": "API is up and running"}
 
-app.include_router(user_router, prefix="/user", tags=["Users"])
+app.include_router(user_router, prefix="/user", tags=["User"])
 app.include_router(auth_router, prefix="/auth", tags=["Auth"])
 app.include_router(hub_router, prefix="/hub", tags=["Hub"])
 
