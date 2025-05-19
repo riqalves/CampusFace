@@ -3,8 +3,11 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import datetime
 # Create a new client and connect to the server
-uri = "mongodb+srv://henrique12095:campusfacedb@campus-face.rhsjkmy.mongodb.net/?retryWrites=true&w=majority&appName=campus-face"
-client = MongoClient(uri, server_api=ServerApi('1'))
+MONGODB_URI = "mongodb+srv://vercel-admin-user:sgBvgwOj8K5cl29M@campus-face.rhsjkmy.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+
+# o de baixo é o pessoal
+# uri = "mongodb+srv://henrique12095:campusfacedb@campus-face.rhsjkmy.mongodb.net/?retryWrites=true&w=majority&appName=campus-face"
+client = MongoClient(MONGODB_URI, server_api=ServerApi('1'))
 
 db = client.campusFace
 
