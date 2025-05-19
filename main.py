@@ -1,10 +1,34 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from router.userRouter import user_router
 from router.authRouter import auth_router
 from router.hubRouter import hub_router
 
 app = FastAPI()
+
+
+origins = [
+    "http://localhost",
+    "http://localhost:8080",
+    "https://campus-face.vercel.app/"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+
+
+
+
+
+
 
 @app.get("/", tags=["Root"])
 def read_root():
