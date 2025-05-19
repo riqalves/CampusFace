@@ -9,7 +9,7 @@ from dbconfig import hubsCollection
 
 class HubController:
     
-    def get_hub_by_id(id: str) -> HubOut | None:
+    async def get_hub_by_id(id: str) -> HubOut | None:
         try:
             obj_id = ObjectId(id)
         except (errors.InvalidId, TypeError):

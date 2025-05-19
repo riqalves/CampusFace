@@ -28,7 +28,7 @@ async def create_hub(hub:Hub):
 
 @hub_router.get("/{id}", response_model=HubOut)
 async def get_hub(id: str):
-    hub = HubController.get_hub_by_id(id)
+    hub = await HubController.get_hub_by_id(id)
     if hub:
         return hub
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Hub não encontrado")
