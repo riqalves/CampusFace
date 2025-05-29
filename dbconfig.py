@@ -11,8 +11,8 @@ LOCAL_URI = "mongodb://localhost:27017"
 client = MongoClient(LOCAL_URI, server_api=ServerApi('1'))
 
 db = client.campusFace
-
 usersCollection = db['users']
+requestsCollection = db['requests']
 hubsCollection = db['hubs']
 
 # Send a ping to confirm a successful connection

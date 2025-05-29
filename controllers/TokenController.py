@@ -68,17 +68,20 @@ class TokenController:
             return user
         return wrapper
 
-    async def get_current_active_user(current_user: Annotated[User, Depends(get_current_user)]):
+    async def   get_current_active_user(current_user: Annotated[User, Depends(get_current_user)]):
             if current_user["disabled"]:
                 raise HTTPException(status_code=400, detail="Usuário inativo!")
             return current_user
 
     def authenticate_user(username: str, password: str) -> dict:
-        # Tenta buscar o usuário pelo username
-        user = UserController.get_user(username)
-        # Se não encontrar, tenta buscar pelo email
-        if not user:
+        if "@" not in username:
+            print("======================================")
+            print(username)
+            user = UserController.get_user(username)
+        else:
             user = UserController.get_user_by_email(username)
+        
+        # Se não encontrar, tenta buscar pelo email
         if not user:
             return False
         if not UserController.verify_password(password, user["password"]):

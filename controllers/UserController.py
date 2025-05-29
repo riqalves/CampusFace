@@ -1,14 +1,14 @@
 from datetime import datetime
 
 from bson import ObjectId
-import jwt
 from passlib.context import CryptContext
 
 from serializer.userSerializer import convertUser
 
 from models.User import User, UpdateUserCredentials
+from models.Request import Request
 
-from dbconfig import usersCollection
+from dbconfig import usersCollection, requestsCollection
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -65,7 +65,16 @@ class UserController:
         return False
 
     
-
+    def create_hub_request(request: Request, userID: str, hubID: str):
+        request.userID = userID
+        request.hubID = hubID
+        request.created_at = datetime.utcnow()
+        
+        insert_request = requestsCollection.insert_one(Request)
+        if insert_request:
+            return "inserido"
+        return "não inserido"
+        
 
     
 

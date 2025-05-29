@@ -5,6 +5,7 @@ from typing import Annotated
 from bson import ObjectId
 
 from models.User import User, UpdateUserCredentials
+from models.Request import Request
 
 from controllers.TokenController import oauth2_scheme
 
@@ -51,3 +52,10 @@ async def delete_user(current_user: Annotated[User, Depends(TokenController.get_
 async def teste(current_user: Annotated[User, Depends(TokenController.get_current_active_user)]):
     if current_user["role"] == "teste":
             return RedirectResponse("/teste")
+        
+@user_router.post("/send-request")
+async def send_request_to_hub(id:str,current_user: Annotated[User, Depends(TokenController.get_current_user)]):
+    if "validator" in  current_user["roles"]:
+        print("tem validador")
+    print("testeeee")
+    return current_user
