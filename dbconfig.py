@@ -7,7 +7,8 @@ MONGODB_URI = "mongodb+srv://vercel-admin-user:sgBvgwOj8K5cl29M@campus-face.rhsj
 
 # o de baixo é o pessoal
 # uri = "mongodb+srv://henrique12095:campusfacedb@campus-face.rhsjkmy.mongodb.net/?retryWrites=true&w=majority&appName=campus-face"
-client = MongoClient(MONGODB_URI, server_api=ServerApi('1'))
+LOCAL_URI = "mongodb://localhost:27017"
+client = MongoClient(LOCAL_URI, server_api=ServerApi('1'))
 
 db = client.campusFace
 

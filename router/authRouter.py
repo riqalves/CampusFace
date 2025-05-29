@@ -53,14 +53,14 @@ async def read_own_items(current_user: Annotated[User, Depends(TokenController.g
 
 @auth_router.get("/admin-area")
 async def read_admin_data(user: User = Depends(TokenController.get_current_user_with_role(["admin"]))):
-    return {"msg": f"Olá, {user["username"]}! Você é um administrador."}
+    return {"msg": f"Olá, {user}! Você é um administrador."}
 
 @auth_router.get("/validator-area")
 async def read_verificador_data(user: User = Depends(TokenController.get_current_user_with_role(["validator"]))):
-    return {"msg": f"Olá, {user["username"]}! Você é um validador."}
+    return {"msg": f"Olá, {user}! Você é um validador."}
 
 @auth_router.get("/client-area")
 async def read_cliente_data(user: User = Depends(TokenController.get_current_user_with_role(["client"]))):
-    return {"msg": f"Olá, {user["username"]}! Você é um cliente."}
+    return {"msg": f"Olá, {user}! Você é um cliente."}
 
 

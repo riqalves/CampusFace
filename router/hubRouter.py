@@ -27,6 +27,15 @@ async def get_hub(id: str):
         return hub
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Hub não encontrado")
 
+@hub_router.get("/")
+async def get_all_hubs():
+    hubs = HubController.get_all_hubs()
+    if not hubs:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Hubs não encontrados")
+    return hubs
+   
+    
+
 # @hub_router.put("/user/update-credentials/")
 # async def update_user_credentials(user:UpdateUserCredentials,current_user: Annotated[User, Depends(TokenController.get_current_active_user)]):
         

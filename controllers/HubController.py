@@ -1,6 +1,8 @@
 from datetime import datetime
 from bson import ObjectId,errors
-from serializer.hubSerializer import convertHub
+from serializer.hubSerializer import convertHub, convertHubs
+
+from fastapi import status, HTTPException
 
 from models.Hub import Hub, HubOut
 
@@ -35,6 +37,22 @@ class HubController:
             return True
         return False
 
+
+    def get_all_hubs()-> dict:
+        try:
+            hubs = hubsCollection.find()
+            if not hubs:
+                raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Nenhum hub adicionado. Erro ao consultar hub")
+            convertedHubs = convertHubs(hubs)
+
+            if convertedHubs == []:
+                raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Nenhum hub adicionado")
+                
+            return convertedHubs
+        except HTTPException as error:
+            raise error
+        
+        
     # def update_hub_credentials(id:str,userCredentials: UpdateUserCredentials) -> bool:
     #     userCredentials.password = UserController.get_password_hash(userCredentials.password)
     #     userCredentials.updated_at = datetime.utcnow()
