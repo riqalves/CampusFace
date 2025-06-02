@@ -64,7 +64,13 @@ class UserController:
             return True
         return False
 
-    
+    def set_image_default(id: str) -> bool:
+        updatedUser = usersCollection.find_one_and_update({"_id": ObjectId(id)}, {"$set": {"imagePath": "default.png"}})
+        if updatedUser:
+            return True
+        return False    
+
+
     def create_hub_request(request: Request, userID: str, hubID: str):
         request.userID = userID
         request.hubID = hubID

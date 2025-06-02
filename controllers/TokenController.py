@@ -73,13 +73,11 @@ class TokenController:
                 raise HTTPException(status_code=400, detail="Usuário inativo!")
             return current_user
 
-    def authenticate_user(username: str, password: str) -> dict:
-        if "@" not in username:
-            print("======================================")
-            print(username)
-            user = UserController.get_user(username)
-        else:
+    def authenticate_user(username: str, password: str):
+        if "@" in username:
             user = UserController.get_user_by_email(username)
+        else:
+            user = UserController.get_user(username)
         
         # Se não encontrar, tenta buscar pelo email
         if not user:

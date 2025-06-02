@@ -6,8 +6,7 @@ from datetime import datetime
 class Request(BaseModel):
     userID: str
     hubID: str
-    isAccepted: bool | None = None
-    isDenied: bool | None = None
+    status: str = "pending"  # default status is 'pending'
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 

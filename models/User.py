@@ -19,6 +19,7 @@ class User(BaseModel):
     cpf: str
     roles: Optional[List[str]]
     disabled: bool | None = None
+    imagePath: str = "default.png"
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 

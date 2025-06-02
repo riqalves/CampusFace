@@ -22,6 +22,7 @@ def convertUser(user) -> dict:
         "cpf":user["cpf"],
         "roles": user["roles"],
         "disabled": user["disabled"],
+        "imagePath": user["imagePath"],
         "created_at": user["created_at"],
         "updated_at": user["updated_at"]
     }

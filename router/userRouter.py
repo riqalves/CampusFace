@@ -54,7 +54,14 @@ async def teste(current_user: Annotated[User, Depends(TokenController.get_curren
             return RedirectResponse("/teste")
         
 @user_router.post("/send-request")
-async def send_request_to_hub(id:str,current_user: Annotated[User, Depends(TokenController.get_current_user)]):
+async def send_request_to_hub(hubID:str,current_user: Annotated[User, Depends(TokenController.get_current_user)]):
+    request = Request(
+        userID=current_user["id"],
+        hubID=hubID,
+        created_at=None  # Será preenchido no controller
+    )
+
+    UserController.create_hub_request(Request(), current_user["id"], id)
     if "validator" in  current_user["roles"]:
         print("tem validador")
     print("testeeee")
