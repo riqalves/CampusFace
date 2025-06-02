@@ -4,8 +4,8 @@ import pickle
 
 ENCODINGS_FILE = "faces.pkl"
 
-def load(image_path, name, encodings):
-    image = face_recognition.load_image_file(image_path)
+def load(imagePath, name, encodings):
+    image = face_recognition.load_image_file(imagePath)
     encoding = face_recognition.face_encodings(image)
     if encoding: 
         encodings[name] = encoding[0]
@@ -19,9 +19,9 @@ def train(directory):
         person_directory = os.path.join(directory, person_name)
         if os.path.isdir(person_directory):
             for image_name in os.listdir(person_directory):
-                image_path = os.path.join(person_directory, image_name)
-                if os.path.isfile(image_path):
-                    load(image_path, person_name, encodings)
+                imagePath = os.path.join(person_directory, image_name)
+                if os.path.isfile(imagePath):
+                    load(imagePath, person_name, encodings)
 
 def load_encodings():
     if os.path.exists(ENCODINGS_FILE):
@@ -29,8 +29,8 @@ def load_encodings():
             return pickle.load(f)
     return {}
 
-def recognize(image_path):
-    unknown_image = face_recognition.load_image_file(image_path)
+def recognize(imagePath):
+    unknown_image = face_recognition.load_image_file(imagePath)
     unknown_encoding = face_recognition.face_encodings(unknown_image)
     
     if not unknown_encoding:
@@ -50,9 +50,9 @@ if __name__ == "__main__":
     train("train")
     val_directory = "val"
     for image_name in os.listdir(val_directory):
-        image_path = os.path.join(val_directory, image_name)
-        if os.path.isfile(image_path):
-            name = recognize(image_path)
+        imagePath = os.path.join(val_directory, image_name)
+        if os.path.isfile(imagePath):
+            name = recognize(imagePath)
             if name:
                 print(f"Recognized {name} in {image_name}")
             else:

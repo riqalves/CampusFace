@@ -5,6 +5,7 @@ from router.userRouter import user_router
 from router.authRouter import auth_router
 from router.hubRouter import hub_router
 from router.imageRouter import image_router
+from router.faceRouter import face_router
 
 app = FastAPI()
 
@@ -40,7 +41,8 @@ def read_root():
 app.include_router(user_router, prefix="/user", tags=["User"])
 app.include_router(auth_router, prefix="/auth", tags=["Auth"])
 app.include_router(hub_router, prefix="/hub", tags=["Hub"])
-app.include_router(image_router, prefix="/image", tags=["Hub"])
+app.include_router(image_router, prefix="/image", tags=["Image"])
+app.include_router(face_router, prefix="/image", tags=["Face"])
 
 
 

@@ -14,9 +14,9 @@ from controllers.TokenController import TokenController
 
 # TO-DO Função (get) para ler e comparar a string enviada
 
-@validator_router.get("/users/me/items/")
-async def read_card(current_user: Annotated[User, Depends(TokenController.get_current_active_user)]):
-    return [{"item_id": "Foo", "owner": current_user["username"]}]
+# @validator_router.get("/users/me/items/")
+# async def read_card(current_user: Annotated[User, Depends(TokenController.get_current_active_user)]):
+#     return [{"item_id": "Foo", "owner": current_user["username"]}]
 
 
 
