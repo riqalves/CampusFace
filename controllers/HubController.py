@@ -3,10 +3,15 @@ from bson import ObjectId,errors
 from serializer.hubSerializer import convertHub, convertHubs
 
 from fastapi import status, HTTPException
+from fastapi.responses import JSONResponse
 
 from models.Hub import Hub, HubOut
+from models.Request import Request
+
+from serializer.requestSerializer import convertRequest, convertRequests
 
 from dbconfig import hubsCollection
+from dbconfig import requestsCollection
 
 
 class HubController:
@@ -52,6 +57,34 @@ class HubController:
         except HTTPException as error:
             raise error
         
+
+
+    def remove_employee_from_hub(hubID: str, userID: str) -> bool:
+        updated_hub = hubsCollection.find_one_and_update(
+            {"_id": ObjectId(hubID)},
+            {"$pull": {"employees": userID}}
+        )
+        if not updated_hub:
+            return False
+        return True
+
+    def remove_client_from_hub(hubID: str, userID: str) -> bool:
+            updated_hub = hubsCollection.find_one_and_update(
+                {"_id": ObjectId(hubID)},
+                {"$pull": {"clients": userID}}
+            )
+            if not updated_hub:
+                return False
+            return True
+        
+
+
+
+
+
+
+
+
         
     # def update_hub_credentials(id:str,userCredentials: UpdateUserCredentials) -> bool:
     #     userCredentials.password = UserController.get_password_hash(userCredentials.password)
@@ -67,9 +100,3 @@ class HubController:
     #         return True
     #     return False
 
-
-    # def aprove_request
-
-    # def aprove_client_request
-
-    # def aprove_employee_request

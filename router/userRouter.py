@@ -1,11 +1,10 @@
 
-from fastapi import APIRouter, HTTPException,FastAPI, Depends, status,File, UploadFile
+from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi.responses import RedirectResponse, JSONResponse
 from typing import Annotated
 from bson import ObjectId
 
 from models.User import User, UpdateUserCredentials
-from models.Request import Request
 
 from controllers.TokenController import oauth2_scheme
 
@@ -18,9 +17,6 @@ user_router = APIRouter(tags=['User'])
 
 
 
-@user_router.get("/teste")
-async def Home():
-    return "Você não deveria estar aqui!!!!!"
 
 @user_router.get("/me/", response_model=User)
 async def read_users_me(current_user: Annotated[User, Depends(TokenController.get_current_active_user)],):
@@ -57,16 +53,3 @@ async def teste(current_user: Annotated[User, Depends(TokenController.get_curren
     if current_user["role"] == "teste":
             return RedirectResponse("/teste")
         
-@user_router.post("/send-request")
-async def send_request_to_hub(hubID:str,current_user: Annotated[User, Depends(TokenController.get_current_user)]):
-    request = Request(
-        userID=current_user["id"],
-        hubID=hubID,
-        created_at=None  # Será preenchido no controller
-    )
-
-    UserController.create_hub_request(Request(), current_user["id"], id)
-    if "validator" in  current_user["roles"]:
-        print("tem validador")
-    print("testeeee")
-    return current_user

@@ -71,16 +71,6 @@ class UserController:
         return False    
 
 
-    def create_hub_request(request: Request, userID: str, hubID: str):
-        request.userID = userID
-        request.hubID = hubID
-        request.created_at = datetime.utcnow()
-        
-        insert_request = requestsCollection.insert_one(Request)
-        if insert_request:
-            return "inserido"
-        return "não inserido"
-        
 
     
 
