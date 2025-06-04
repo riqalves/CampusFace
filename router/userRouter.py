@@ -12,6 +12,8 @@ from controllers.TokenController import oauth2_scheme
 from controllers.TokenController import TokenController
 from controllers.UserController import UserController
 
+from face.main import save_image_to_train_dir, train
+
 user_router = APIRouter(tags=['User'])
 
 
@@ -30,6 +32,8 @@ async def create_user(user:User):
         raise HTTPException(status_code=500, detail="Email já cadastrado")
     if not UserController.insert_user(user):
         raise HTTPException(status_code=500, detail="Erro ao cadastrar usuário")
+    save_image_to_train_dir(user.email, user.imagePath )
+    train("face/train")
     return JSONResponse(status_code=201, content="Usuário cadastrado com sucesso!!")
 
 

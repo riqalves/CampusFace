@@ -42,7 +42,7 @@ app.include_router(user_router, prefix="/user", tags=["User"])
 app.include_router(auth_router, prefix="/auth", tags=["Auth"])
 app.include_router(hub_router, prefix="/hub", tags=["Hub"])
 app.include_router(image_router, prefix="/image", tags=["Image"])
-app.include_router(face_router, prefix="/image", tags=["Face"])
+app.include_router(face_router, prefix="/face", tags=["Face"])
 
 
 

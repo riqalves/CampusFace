@@ -1,8 +1,31 @@
 import face_recognition
 import os
 import pickle
+import shutil
 
 ENCODINGS_FILE = "faces.pkl"
+
+def save_image_to_train_dir(user_email: str, imagePath: str):
+    
+    """
+    Cria a pasta /face/train/{user-email}/ se não existir e copia a imagem para lá.
+    """
+
+    source_dir = "imagens"
+    train_dir = "face/train"
+    
+    # Caminho de origem da imagem
+    source_image_path = os.path.join(source_dir, imagePath)
+    # Caminho de destino
+    user_train_dir = os.path.join(train_dir, user_email)
+    os.makedirs(user_train_dir, exist_ok=True)
+    dest_image_path = os.path.join(user_train_dir, imagePath)
+    # Copia a imagem apenas se ainda não existir no diretório de treino
+    if not os.path.isfile(dest_image_path):
+        shutil.copy2(source_image_path, dest_image_path)
+    return dest_image_path
+
+
 
 def load(imagePath, name, encodings):
     image = face_recognition.load_image_file(imagePath)
