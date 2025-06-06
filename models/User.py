@@ -12,14 +12,15 @@ class UpdateUserCredentials(BaseModel):
     updated_at: Optional[datetime] = None
 
 class User(BaseModel):
+    name: str
     username: str
     email: EmailStr
     password: str
     birthDate: Optional[datetime]
     cpf: str
-    roles: Optional[List[str]]
+    role: str
     disabled: bool | None = None
-    imagePath: str = "default.png"
+    imagePath: Optional[str]
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 

@@ -1,8 +1,12 @@
 
-from fastapi import APIRouter, HTTPException, Depends, status
+from datetime import datetime
+import os
+import random
+from fastapi import APIRouter, Form, HTTPException, Depends, status, File, UploadFile
 from fastapi.responses import RedirectResponse, JSONResponse
-from typing import Annotated
+from typing import Annotated, List, Optional
 from bson import ObjectId
+from pydantic import EmailStr
 
 from models.User import User, UpdateUserCredentials
 
@@ -22,15 +26,75 @@ user_router = APIRouter(tags=['User'])
 async def read_users_me(current_user: Annotated[User, Depends(TokenController.get_current_active_user)],):
     return current_user
 
+    
+IMAGES_DIRECTORY = "imagens"
 @user_router.post("/create")
-async def create_user(user:User):
+async def create_user(
+    name: str = Form(...),
+    username: str = Form(...),
+    email: EmailStr = Form(...),
+    password: str = Form(...),
+    birthDate: Optional[datetime] = Form(None),
+    cpf: str = Form(...),
+    role: str = Form(...),
+    disabled: Optional[bool] = Form(False),
+    image: Optional[UploadFile] = File(None)
+):
+    print("=========================================================")
+    print(image)
+    print("=========================================================")
+    # Salva a imagem no diretório de imagens
+
+    if role in ["admin", "validator"]:
+        image_filename = "default.jpg"
+    if image != None:
+        image_filename = f"{random.randint(373, 373773)}{random.randint(373, 373773)}{image.filename}"
+
+        file_path = os.path.join(IMAGES_DIRECTORY, image_filename)
+        with open(file_path, "wb") as file:
+            file.write(await image.read())
+        save_image_to_train_dir(email, image_filename)
+        train("face/train")
+         
+    # Cria o objeto User
+    user = User(
+        name=name,
+        username=username,
+        email=email,
+        password=password,
+        birthDate=birthDate,
+        cpf=cpf,
+        role=role,
+        disabled=disabled,
+        imagePath=image_filename,
+        created_at=datetime.utcnow(),
+        updated_at=datetime.utcnow()
+    )
+    # print("=========================================================")
+    print(user)
+
     if not UserController.is_email_valid(user.email):
-        raise HTTPException(status_code=500, detail="Email já cadastrado")
+        raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE, detail="Email já cadastrado")
     if not UserController.insert_user(user):
-        raise HTTPException(status_code=500, detail="Erro ao cadastrar usuário")
-    save_image_to_train_dir(user.email, user.imagePath )
-    train("face/train")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Erro ao cadastrar usuário")
+    
+    
     return JSONResponse(status_code=201, content="Usuário cadastrado com sucesso!!")
+   
+
+
+
+
+
+# @user_router.post("/create")
+# async def old_create_user(user:User,file: UploadFile = File(...)):
+#     if not UserController.is_email_valid(user.email):
+#         raise HTTPException(status_code=500, detail="Email já cadastrado")
+#     if not UserController.insert_user(user):
+#         raise HTTPException(status_code=500, detail="Erro ao cadastrar usuário")
+#     save_image_to_train_dir(user.email, user.imagePath )
+#     train("face/train")
+#     return JSONResponse(status_code=201, content="Usuário cadastrado com sucesso!!")
 
 
 @user_router.put("/update-credentials/")    

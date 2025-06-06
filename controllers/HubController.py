@@ -57,6 +57,24 @@ class HubController:
         except HTTPException as error:
             raise error
         
+    def add_user_to_hub(hubID: str, userID: str, user_role: str) -> bool:
+        """
+        Adiciona o userID ao campo correto (clients ou employees) do hub, conforme a role.
+        """
+        if user_role == "client":
+            update_field = "clients"
+        elif user_role == "validator":
+            update_field = "employees"
+        else:
+            raise HTTPException(status.HTTP_400_BAD_REQUEST, detail="Role de usuário inválida para associação ao hub.")
+
+        updated_hub = hubsCollection.find_one_and_update(
+            {"_id": ObjectId(hubID)},
+            {"$addToSet": {update_field: userID}}
+        )
+        if not updated_hub:
+            raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Hub não encontrado")
+        return True
 
 
     def remove_employee_from_hub(hubID: str, userID: str) -> bool:

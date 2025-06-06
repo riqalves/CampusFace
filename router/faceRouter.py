@@ -47,8 +47,9 @@ async def recognize_face(current_user: Annotated[User, Depends(TokenController.g
     if not image_filename or not os.path.isfile(image_path):
         raise HTTPException(status_code=404, detail="Imagem de perfil não encontrada")
     name = recognize(image_path)
+    print(name)
     if name:
-        return {"recognized": True, "name": name}
+        return {"recognized": True, "user": current_user}
     else:
         raise HTTPException(status_code=404, detail="Face não reconhecida")
     
@@ -59,7 +60,7 @@ async def train_faces(current_user: Annotated[User, Depends(TokenController.get_
     Treina o modelo de reconhecimento facial com as imagens do diretório 'train'.
     Apenas usuários administradores podem treinar.
     """
-    if not current_user or "admin" not in (current_user.get("roles") or []):
+    if not current_user or "admin" not in (current_user.get("role") or []):
         raise HTTPException(status_code=403, detail="Apenas administradores podem treinar o modelo.")
     if not os.path.isdir(TRAIN_DIRECTORY):
         raise HTTPException(status_code=404, detail="Diretório de treinamento não encontrado.")

@@ -6,14 +6,14 @@ import shutil
 ENCODINGS_FILE = "faces.pkl"
 
 def save_image_to_train_dir(user_email: str, imagePath: str):
-    
     """
     Cria a pasta /face/train/{user-email}/ se não existir e copia a imagem para lá.
     """
 
     source_dir = "imagens"
     train_dir = "face/train"
-    
+    print("========================================================")
+    print(imagePath)
     # Caminho de origem da imagem
     source_image_path = os.path.join(source_dir, imagePath)
     # Caminho de destino
@@ -37,9 +37,12 @@ def load(imagePath, name, encodings):
             pickle.dump(encodings, f)
 
 def train(directory):
+    print("=================TRAIN IN MAIN.PY=======================================")
+    
     encodings = {}
     for person_name in os.listdir(directory):
         person_directory = os.path.join(directory, person_name)
+        print(person_directory)
         if os.path.isdir(person_directory):
             for image_name in os.listdir(person_directory):
                 imagePath = os.path.join(person_directory, image_name)
@@ -55,10 +58,12 @@ def load_encodings():
 def recognize(imagePath):
     unknown_image = face_recognition.load_image_file(imagePath)
     unknown_encoding = face_recognition.face_encodings(unknown_image)
-    
+    print("=================RECOGNIZE IN MAIN.PY=======================================")
+    print(imagePath)
+    print(unknown_image)
     if not unknown_encoding:
         return None  
-    
+    print("Unknown encoding found:", unknown_encoding)
     unknown_encoding = unknown_encoding[0]
     encodings = load_encodings()
 

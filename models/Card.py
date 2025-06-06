@@ -11,6 +11,7 @@ class Card(BaseModel):
 
 
 class User(BaseModel):
+    name: str
     username: str
     email: EmailStr
     password: str

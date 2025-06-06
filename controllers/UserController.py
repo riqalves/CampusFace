@@ -15,7 +15,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class UserController:
     
-    def verify_password(plain_password, hashed_password):
+    def verify_password(plain_password, hashed_password)-> bool:
         return pwd_context.verify(plain_password, hashed_password)
 
 
@@ -42,13 +42,15 @@ class UserController:
         return False
 
     def insert_user(user: User) -> bool:
-        user.created_at = datetime.utcnow()
-        user.password =  UserController.get_password_hash(user.password)
-        user.disabled = False
-        insert = usersCollection.insert_one(dict(user))
-        if insert:
-            return True
-        return False
+        try:  
+            user.password =  UserController.get_password_hash(user.password)
+            insert = usersCollection.insert_one(dict(user))
+            if insert:
+                return True
+        except Exception as e:
+            print(f"Erro ao inserir usuário: {e}")
+            return False
+        
 
     def update_user_credentials(id:str,userCredentials: UpdateUserCredentials) -> bool:
         userCredentials.password = UserController.get_password_hash(userCredentials.password)

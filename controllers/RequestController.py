@@ -48,6 +48,24 @@ class RequestController:
         if updatedRequest:
             return True
         return False
+
+
+    def get_all_requests_from_hub(hubID: str) -> list[Request] | bool:
+        print("========================================================")
+        requests = requestsCollection.find({"hubID": hubID})
+
+        if not requests:
+            return False
+        requests = convertRequests(requests)
+
+        return requests
+    
+
+
+
+
+
+
     # def set_request_status(id: str, status: str)-> bool:
 
     #     approved_at = None
@@ -67,15 +85,5 @@ class RequestController:
     #     if updatedRequest:
     #         return True
     #     return False
-
-    def get_all_requests_from_hub(hubID: str) -> list[Request] | bool:
-        print("========================================================")
-        requests = requestsCollection.find({"hubID": hubID})
-
-        if not requests:
-            return False
-        requests = convertRequests(requests)
-
-        return requests
             
 

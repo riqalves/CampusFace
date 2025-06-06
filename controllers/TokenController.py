@@ -60,7 +60,8 @@ class TokenController:
 
     def get_current_user_with_role(allowed_roles: List[str]):
         async def wrapper(user: User = Depends(TokenController.get_current_user)):
-            if not any(role in allowed_roles for role in user["roles"]):
+            # Considerando que user["role"] é uma string
+            if user["role"] not in allowed_roles:
                 raise HTTPException(
                     status_code=status.HTTP_403_FORBIDDEN,
                     detail="Você não tem permissão para acessar este recurso"

@@ -13,6 +13,7 @@ import os
 image_router = APIRouter(tags=['Image'])
 # ** Rota para upload de imagem de perfil
 IMAGES_DIRECTORY = "imagens"
+
 @image_router.put("/update")
 async def upload_image(file: UploadFile = File(...), current_user: str = Depends(TokenController.get_current_user)):
     if not os.path.exists(IMAGES_DIRECTORY):

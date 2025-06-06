@@ -4,6 +4,8 @@ from fastapi.responses import JSONResponse
 from typing import Annotated
 from bson import ObjectId
 
+from dbconfig import requestsCollection
+
 from models.User import User
 from models.Request import Request
 
@@ -21,9 +23,10 @@ async def send_request_to_hub(hubID:str,current_user: Annotated[User, Depends(To
     request = Request(
         userID=current_user["id"],
         hubID=hubID,
+        userRole=current_user["role"],
     )
 
-    insertedRequest = UserController.create_hub_request(request)
+    insertedRequest = RequestController.create_user_hub_request(request)
     if not insertedRequest:
         raise HTTPException(status_code=500, detail="Erro ao enviar solicitação para o hub")
 
@@ -42,9 +45,15 @@ async def get_all_requests_from_hub(id: str):
 
 
 @request_router.put("/hub/set-request-status")
-async def set_request_status(id: str ,status:str, current_user: Annotated[User, Depends(TokenController.get_current_user_with_role("admin"))]):
+async def set_request_status(id: str ,status:str, role: str, current_user: Annotated[User, Depends(TokenController.get_current_user_with_role("admin"))]):
     if not id:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="ID do pedido não fornecido")
+
+# ** PEGAR A ROLE DO USUÁRIO PRA ADICIONAR EM EMPLOYEE E CLIENTS DENTRO DA COLLECTION HUB
+    role = requestsCollection.find_one({"_id": ObjectId(id)})["role"]
+
+    if status == "approved":
+        HubController.add_user_to_hub(current_user["id"],id, role)
 
     updatedRequest = RequestController.set_request_status(id, status)
 
