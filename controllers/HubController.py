@@ -8,10 +8,10 @@ from fastapi.responses import JSONResponse
 from models.Hub import Hub, HubOut
 from models.Request import Request
 
-from serializer.requestSerializer import convertRequest, convertRequests
+from serializer.userSerializer import convertUser,  convertUsers
 
 from dbconfig import hubsCollection
-from dbconfig import requestsCollection
+from dbconfig import usersCollection
 
 
 class HubController:
@@ -37,6 +37,8 @@ class HubController:
 
     def insert_hub(hub: Hub) -> bool:
         hub.created_at = datetime.utcnow()
+        hub.employees = []
+        hub.clients = []
         insert = hubsCollection.insert_one(dict(hub))
         if insert:
             return True
@@ -61,6 +63,11 @@ class HubController:
         """
         Adiciona o userID ao campo correto (clients ou employees) do hub, conforme a role.
         """
+        user = usersCollection.find_one({"_id": ObjectId(userID)})
+        if not user:
+            raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Usuário não encontrado")
+        user = convertUser(user)
+        print(f"Adicionando usuário {userID} ao hub {hubID} com a role {user_role}")
         if user_role == "client":
             update_field = "clients"
         elif user_role == "validator":
@@ -70,7 +77,7 @@ class HubController:
 
         updated_hub = hubsCollection.find_one_and_update(
             {"_id": ObjectId(hubID)},
-            {"$addToSet": {update_field: userID}}
+            {"$addToSet": {update_field: user}}
         )
         if not updated_hub:
             raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Hub não encontrado")
@@ -96,6 +103,19 @@ class HubController:
             return True
         
 
+    def get_validators_from_hub(hubID: str) -> list[Request] | bool:
+        """
+        Retorna todos os validadores de um hub.
+        """
+        try:
+            hub = hubsCollection.find_one({"_id": ObjectId(hubID)})
+            if not hub:
+                raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Hub não encontrado")
+            validators = hub.get("employees", [])
+            return validators
+        except errors.InvalidId:
+            raise HTTPException(status.HTTP_400_BAD_REQUEST, detail="ID do hub inválido")
+    
 
 
 

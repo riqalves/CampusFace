@@ -19,7 +19,8 @@ hub_router = APIRouter(tags=['Hub'])
 
 
 @hub_router.post("/create")
-async def create_hub(hub:Hub):
+async def create_hub(hub:Hub, current_user: Annotated[User, Depends(TokenController.get_current_user_with_role(["admin"]))]):
+    hub.hubAdmin = current_user["id"]
     if not HubController.insert_hub(hub):
         raise HTTPException(status_code=500, detail="Erro ao cadastrar Hub")
     return JSONResponse(status_code=status.HTTP_201_CREATED, content="Hub cadastrado com sucesso!!")
@@ -44,6 +45,13 @@ async def add_user_to_hub(userID: str, user_role: str, current_user: Annotated[U
     if not HubController.add_user_to_hub(current_user["id"], userID, user_role):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro ao adicionar usuário ao hub")
     return JSONResponse(status_code=200, content="Usuário adicionado com sucesso ao hub")
+
+@hub_router.get("/get-validators-from-hub/{id}")
+async def get_validators_from_hub(id: str):
+    validators = HubController.get_validators_from_hub(id)
+    if not validators:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum validador encontrado para este hub")
+    return validators
 
 
 

@@ -14,6 +14,7 @@ db = client.campusFace
 usersCollection = db['users']
 requestsCollection = db['requests']
 hubsCollection = db['hubs']
+codesCollection = db['codes']
 
 # Send a ping to confirm a successful connection
 try:

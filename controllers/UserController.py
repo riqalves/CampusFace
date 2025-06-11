@@ -1,5 +1,8 @@
 from datetime import datetime
 
+import random
+import string
+
 from bson import ObjectId
 from passlib.context import CryptContext
 
@@ -8,7 +11,7 @@ from serializer.userSerializer import convertUser
 from models.User import User, UpdateUserCredentials
 from models.Request import Request
 
-from dbconfig import usersCollection, requestsCollection
+from dbconfig import usersCollection, codesCollection
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -71,7 +74,8 @@ class UserController:
         if updatedUser:
             return True
         return False    
-
+    
+   
 
 
     
