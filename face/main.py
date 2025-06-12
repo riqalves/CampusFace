@@ -5,7 +5,7 @@ import shutil
 
 ENCODINGS_FILE = "faces.pkl"
 
-def save_image_to_train_dir(user_email: str, imagePath: str):
+def save_image_to_train_dir(id: str, imagePath: str):
     """
     Cria a pasta /face/train/{user-email}/ se não existir e copia a imagem para lá.
     """
@@ -17,7 +17,7 @@ def save_image_to_train_dir(user_email: str, imagePath: str):
     # Caminho de origem da imagem
     source_image_path = os.path.join(source_dir, imagePath)
     # Caminho de destino
-    user_train_dir = os.path.join(train_dir, user_email)
+    user_train_dir = os.path.join(train_dir, id)
     os.makedirs(user_train_dir, exist_ok=True)
     dest_image_path = os.path.join(user_train_dir, imagePath)
     # Copia a imagem apenas se ainda não existir no diretório de treino
@@ -66,7 +66,6 @@ def recognize(imagePath):
     print("Unknown encoding found:", unknown_encoding)
     unknown_encoding = unknown_encoding[0]
     encodings = load_encodings()
-
     for name, encoding in encodings.items():
         results = face_recognition.compare_faces([encoding], unknown_encoding)
         

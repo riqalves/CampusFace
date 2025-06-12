@@ -20,7 +20,7 @@ class User(BaseModel):
     cpf: str
     role: str
     disabled: bool | None = None
-    imagePath: Optional[str]
+    imagePath: Optional[str] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 

@@ -25,6 +25,17 @@ class UserController:
     def get_password_hash(password)->str:
         return pwd_context.hash(password)
 
+    def get_user_by_id(id: str) -> User | bool:
+        try:
+            obj_id = ObjectId(id)
+        except (ValueError, TypeError):
+            return False
+        
+        user = usersCollection.find_one({"_id": obj_id})
+        if not user:
+            return False
+        return convertUser(user)
+
     def get_user(username: str)->dict:
         user_data = usersCollection.find_one({"username": username})
         if user_data:
@@ -44,12 +55,14 @@ class UserController:
             return True
         return False
 
-    def insert_user(user: User) -> bool:
+    def insert_user(user: User) -> bool | str:
         try:  
             user.password =  UserController.get_password_hash(user.password)
-            insert = usersCollection.insert_one(dict(user))
-            if insert:
-                return True
+            id = usersCollection.insert_one(dict(user)).inserted_id
+            print(id)
+            print("==========================================================")
+            if id:
+                return str(id)
         except Exception as e:
             print(f"Erro ao inserir usuário: {e}")
             return False

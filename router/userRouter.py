@@ -44,18 +44,18 @@ async def create_user(
     print(image)
     print("=========================================================")
     # Salva a imagem no diretório de imagens
-
-    if role in ["admin", "validator"]:
-        image_filename = "default.jpg"
+   
+    
+    image_filename = "default.jpg"  # Nome padrão para a imagem, caso não seja fornecida
+         
     if image != None:
         image_filename = f"{random.randint(373, 373773)}{random.randint(373, 373773)}{image.filename}"
 
         file_path = os.path.join(IMAGES_DIRECTORY, image_filename)
         with open(file_path, "wb") as file:
             file.write(await image.read())
-        save_image_to_train_dir(email, image_filename)
-        train("face/train")
-         
+        
+
     # Cria o objeto User
     user = User(
         name=name,
@@ -75,9 +75,19 @@ async def create_user(
 
     if not UserController.is_email_valid(user.email):
         raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE, detail="Email já cadastrado")
-    if not UserController.insert_user(user):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Erro ao cadastrar usuário")
     
+    id = UserController.insert_user(user)
+    if id == False:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Erro ao cadastrar usuário")
+
+    
+    if image is not None:
+        save_image_to_train_dir(id, image_filename)
+        train("face/train")
+
+    if role in ["admin", "validator"]:
+        image_filename = "default.jpg"
+
     
     return JSONResponse(status_code=201, content="Usuário cadastrado com sucesso!!")
    

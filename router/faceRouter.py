@@ -1,5 +1,7 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, File, HTTPException, Depends, UploadFile
+from fastapi.responses import JSONResponse
 from controllers.TokenController import TokenController
+from controllers.UserController import UserController
 from models.User import User
 from typing import Annotated
 import os
@@ -39,19 +41,25 @@ TRAIN_DIRECTORY = "face/train"
 
 
 
-@face_router.post("/recognize-face")
-async def recognize_face(current_user: Annotated[User, Depends(TokenController.get_current_active_user)]):
+@face_router.post("/recognize")
+async def recognize_face(image: UploadFile = File(...)):
     print("Iniciando reconhecimento facial")
-    image_filename = current_user["imagePath"]
+
+    
+    image_filename = image.filename
+
     image_path = os.path.join(IMAGES_DIRECTORY, image_filename)
-    if not image_filename or not os.path.isfile(image_path):
-        raise HTTPException(status_code=404, detail="Imagem de perfil não encontrada")
-    name = recognize(image_path)
-    print(name)
-    if name:
-        return {"recognized": True, "user": current_user}
+    with open(image_path, "wb") as file:
+        file.write(await image.read())
+ 
+    recognized = recognize(image_path)
+    user = UserController.get_user_by_id(recognized)
+    
+    
+    if recognized:
+        return {"recognized": True, "user": user}
     else:
-        raise HTTPException(status_code=404, detail="Face não reconhecida")
+        return {"recognized": False, "user": None}
     
 
 @face_router.post("/train")
