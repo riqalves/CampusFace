@@ -24,6 +24,11 @@ auth_router = APIRouter(tags=['Auth'])
 @auth_router.post("/login")
 async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
 
+    if "@" not in form_data.username:
+        userLogin = UserController.get_user(username=form_data.username)
+    else:
+        userLogin = UserController.get_user_by_email(email=form_data.username)
+
     user = TokenController.authenticate_user(form_data.username, form_data.password)
     if not user:
         raise HTTPException(
@@ -40,7 +45,8 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
     return {
         "access_token": access_token,
         "token_type": "bearer",
-        "main_role": main_role
+        "main_role": userLogin["role"],
+        "user": userLogin
     }
 
 

@@ -57,10 +57,10 @@ def load_encodings():
 
 def recognize(imagePath):
     unknown_image = face_recognition.load_image_file(imagePath)
-    unknown_encoding = face_recognition.face_encodings(unknown_image)
-    print("=================RECOGNIZE IN MAIN.PY=======================================")
+    unknown_encoding = face_recognition.face_encodings(unknown_image, num_jitters=10, model="large")
+    print("=================RECOGNIZE IN MAIN.PY PRINT IMAGEPATH=======================================")
     print(imagePath)
-    print(unknown_image)
+    # print(unknown_image)
     if not unknown_encoding:
         return None  
     print("Unknown encoding found:", unknown_encoding)
